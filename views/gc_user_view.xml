@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="gc_user_form_view_inherit">
+            <field name="name">gc.user.from.view.inherit</field>
+            <field name="model">gc.user</field>
+            <field name="inherit_id" ref="gigaclub_base.gc_user_form_view" />
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="gc_team_id" />
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="gc_user_tree_view_inherit">
+            <field name="name">gc.user.tree.view.inherit</field>
+            <field name="model">gc.user</field>
+            <field name="inherit_id" ref="gigaclub_base.gc_user_tree_view" />
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <field name="gc_team_id" />
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>
