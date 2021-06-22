@@ -1,4 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_gc_task_gigaclub,access_gc_task_gigaclub,model_gc_task,gigaclub_base.group_gigaclub,1,1,1,1
-access_gc_team_gigaclub,access_gc_team_gigaclub,model_gc_team,gigaclub_base.group_gigaclub,1,1,1,1
-access_gc_world_gigaclub,access_gc_world_gigaclub,model_gc_world,gigaclub_base.group_gigaclub,1,1,1,1
+access_gc_builder_task_gigaclub,access_gc_builder_task_gigaclub,model_gc_builder_task,gigaclub_base.group_gigaclub,1,1,1,1
+access_gc_builder_team_gigaclub,access_gc_builder_team_gigaclub,model_gc_builder_team,gigaclub_base.group_gigaclub,1,1,1,1
+access_gc_builder_world_gigaclub,access_gc_builder_world_gigaclub,model_gc_builder_world,gigaclub_base.group_gigaclub,1,1,1,1

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="gc_builder_team_tree_view">
+            <field name="name">gc.builder.team.tree.view</field>
+            <field name="model">gc.builder.team</field>
+            <field name="arch" type="xml">
+                <tree string="Teams">
+                    <field name="name" />
+                    <field name="description" />
+                    <field name="user_ids" />
+                    <field name="world_ids" />
+                    <field name="task_ids" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="gc_builder_team_form_view">
+            <field name="name">gc.builder.team.form.view</field>
+            <field name="model">gc.builder.team</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name" />
+                        <field name="description" />
+                        <field name="user_ids" />
+                        <field name="world_ids" />
+                        <field name="task_ids" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="gc_builder_team_action">
+            <field name="name">Team</field>
+            <field name="res_model">gc.builder.team</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

@@ -2,35 +2,39 @@
 <odoo>
     <data>
 
-        <record model="ir.ui.view" id="gc_task_tree_view">
-            <field name="name">gc.task.tree.view</field>
-            <field name="model">gc.task</field>
+        <record model="ir.ui.view" id="gc_builder_task_tree_view">
+            <field name="name">gc.builder.task.tree.view</field>
+            <field name="model">gc.builder.task</field>
             <field name="arch" type="xml">
                 <tree string="Tasks">
                     <field name="name" />
                     <field name="description" />
                     <field name="world_ids" />
+                    <field name="user_ids" />
+                    <field name="team_ids" />
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="gc_task_form_view">
-            <field name="name">gc.task.form.view</field>
-            <field name="model">gc.task</field>
+        <record model="ir.ui.view" id="gc_builder_task_form_view">
+            <field name="name">gc.builder.task.form.view</field>
+            <field name="model">gc.builder.task</field>
             <field name="arch" type="xml">
                 <form>
                     <group>
                         <field name="name" />
                         <field name="description" />
                         <field name="world_ids" />
+                        <field name="user_ids" />
+                        <field name="team_ids" />
                     </group>
                 </form>
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="gc_task_action">
+        <record model="ir.actions.act_window" id="gc_builder_task_action">
             <field name="name">Task</field>
-            <field name="res_model">gc.task</field>
+            <field name="res_model">gc.builder.task</field>
             <field name="view_mode">tree,form</field>
         </record>
 

@@ -8,7 +8,8 @@
             <field name="inherit_id" ref="gigaclub_base.gc_user_form_view" />
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                    <field name="gc_team_id" />
+                    <field name="team_id" />
+                    <field name="world_ids" />
                 </field>
             </field>
         </record>
@@ -19,7 +20,8 @@
             <field name="inherit_id" ref="gigaclub_base.gc_user_tree_view" />
             <field name="arch" type="xml">
                 <field name="state" position="after">
-                    <field name="gc_team_id" />
+                    <field name="team_id" />
+                    <field name="world_ids" />
                 </field>
             </field>
         </record>

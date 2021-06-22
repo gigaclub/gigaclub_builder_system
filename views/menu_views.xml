@@ -3,9 +3,9 @@
     <data>
 
         <menuitem id="gc_builder_system_menu_root" parent="gigaclub_base.gc_menu_root" name="Builder System" />
-        <menuitem id="gc_menu_tasks" parent="gc_builder_system_menu_root" action="gc_task_action" name="Tasks" />
-        <menuitem id="gc_menu_team" parent="gc_builder_system_menu_root" action="gc_team_action" name="Teams" />
-        <menuitem id="gc_menu_world" parent="gc_builder_system_menu_root" action="gc_world_action" name="Worlds" />
+        <menuitem id="gc_menu_tasks" parent="gc_builder_system_menu_root" action="gc_builder_task_action" name="Tasks" />
+        <menuitem id="gc_menu_team" parent="gc_builder_system_menu_root" action="gc_builder_team_action" name="Teams" />
+        <menuitem id="gc_menu_world" parent="gc_builder_system_menu_root" action="gc_builder_world_action" name="Worlds" />
 
     </data>
 </odoo>
