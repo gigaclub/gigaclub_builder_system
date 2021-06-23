@@ -9,6 +9,7 @@
                 <tree string="Teams">
                     <field name="name" />
                     <field name="description" />
+                    <field name="manager_ids" />
                     <field name="user_ids" />
                     <field name="world_ids" />
                     <field name="task_ids" />
@@ -24,6 +25,7 @@
                     <group>
                         <field name="name" />
                         <field name="description" />
+                        <field name="manager_ids" />
                         <field name="user_ids" />
                         <field name="world_ids" />
                         <field name="task_ids" />

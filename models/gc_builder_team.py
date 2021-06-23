@@ -1,4 +1,5 @@
 from odoo import fields, models, api
+from odoo.exceptions import ValidationError
 
 
 class GCBuilderTeam(models.Model):
@@ -7,8 +8,8 @@ class GCBuilderTeam(models.Model):
     name = fields.Char(required=True)
     description = fields.Text()
 
-    user_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_id")
-    manager_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_id")
+    user_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_user_id", inverse="_inverse_teams")
+    manager_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_manager_id", inverse="_inverse_teams")
     world_ids = fields.Many2many(comodel_name="gc.builder.world")
     task_ids = fields.Many2many(comodel_name="gc.builder.task")
 
@@ -16,14 +17,17 @@ class GCBuilderTeam(models.Model):
         ('name_unique', 'UNIQUE(name)', 'name must be unique!')
     ]
 
-    def is_manager(self, user_id, team_id):
-        return user_id in team_id.manager_ids
-
-    def check_team(self, team_id):
-        if not team_id.user_ids and team_id.manager_ids:
-            team_id.unlink()
-        if not team_id.manager_ids:
-            team_id.manager_ids |= team_id.user_ids[0]
+    def _inverse_teams(self):
+        for rec in self:
+            print(rec.user_ids)
+            print(rec.manager_ids)
+            print(not rec.user_ids and not rec.manager_ids)
+            if not rec.user_ids and not rec.manager_ids:
+                rec.unlink()
+            if not rec.manager_ids:
+                user_id = rec.user_ids[0]
+                rec.user_ids[0] = None
+                rec.manager_ids |= user_id
 
     # Status Codes:
     # 3: User already in team
@@ -33,40 +37,37 @@ class GCBuilderTeam(models.Model):
     @api.model
     def create_team(self, player_uuid, name, description=False):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
-        if user_id.team_id is not None:
+        if user_id.team_user_id or user_id.team_manager_id:
             return 3
-        if not bool(self.search_count([("name", "=", name)])):
+        if bool(self.search_count([("name", "=", name)])):
             return 2
         team_id = self.create({
             "name": name,
             "description": description,
-            "manager_ids": [(4, user_id)]
+            "manager_ids": [(4, user_id.id)]
         })
         if not team_id:
             return 1
         return 0
 
     # Status Codes:
-    # 4: User has no team
-    # 3: Team does not exist
-    # 2: User is not member of this team
+    # 3: User has no team
+    # 2: Team does not exist
     # 1: User is not manager of this team
     # 0: Success
     @api.model
     def edit_team(self, player_uuid, name, new_name, new_description=False):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
-        if not user_id.team_id:
-            return 4
+        if not user_id.team_user_id and not user_id.team_manager_id:
+            return 3
         team_id = self.search([("name", "=", name)])
         if not team_id:
-            return 3
-        if user_id.team_id is not team_id:
             return 2
-        if not self.is_manager(user_id, team_id):
+        if user_id not in team_id.manager_ids:
             return 1
         team_id.write({
             "name": new_name,
-            "description": new_description,
+            "description": new_description if new_description else team_id.description,
         })
         return 0
 
@@ -76,11 +77,77 @@ class GCBuilderTeam(models.Model):
     @api.model
     def leave_team(self, player_uuid):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
-        if not user_id.team_id:
+        if not user_id.team_user_id and not user_id.team_manager_id:
             return 1
-        team_id = user_id.team_id
-        user_id.team_id = False
-        self.check_team(team_id)
+        if user_id.team_manager_id:
+            user_id.team_manager_id = False
+        elif user_id.team_user_id:
+            user_id.team_user_id = False
+        return 0
+
+    # Status Codes:
+    # 3: Team does not exist
+    # 2: User is not manager
+    # 1: User is not user of this team
+    # 0: Success
+    @api.model
+    def kick_member(self, player_uuid, player_uuid_to_kick):
+        user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
+        team_id = user_id.team_user_id or user_id.team_manager_id
+        if not team_id:
+            return 3
+        if user_id not in team_id.manager_ids:
+            return 2
+        user_id_to_kick = self.env["gc.user"].search([("mc_uuid", "=", player_uuid_to_kick)])
+        if user_id_to_kick not in team_id.user_ids:
+            return 1
+        team_id.user_ids = [(3, user_id_to_kick.id)]
+        return 0
+
+    # Status Codes:
+    # 4: Team does not exist
+    # 3: User is not manager
+    # 2: User to kick is not in a team
+    # 1: User to kick is not in this team
+    # 0: Success
+    @api.model
+    def promote_member(self, player_uuid, player_uuid_to_promote):
+        user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
+        team_id = user_id.team_user_id or user_id.team_manager_id
+        if not team_id:
+            return 4
+        if user_id not in team_id.manager_ids:
+            return 3
+        user_id_to_promote = self.env["gc.user"].search([("mc_uuid", "=", player_uuid_to_promote)])
+        if not user_id_to_promote.team_user_id:
+            return 2
+        if user_id_to_promote.team_user_id is not team_id:
+            return 1
+        team_id.user_ids = [(3, user_id_to_promote.id)]
+        team_id.manager_ids |= user_id_to_promote
+        return 0
+
+    # Status Codes:
+    # 4: Team does not exist
+    # 3: User is not manager
+    # 2: User to kick is not a team
+    # 1: User to kick is not in this team
+    # 0: Success
+    @api.model
+    def demote_member(self, player_uuid, player_uuid_to_demote):
+        user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
+        team_id = user_id.team_user_id or user_id.team_manager_id
+        if not team_id:
+            return 4
+        if user_id not in team_id.manager_ids:
+            return 3
+        user_id_to_demote = self.env["gc.user"].search([("mc_uuid", "=", player_uuid_to_demote)])
+        if not user_id_to_demote.team_manager_id:
+            return 2
+        if user_id_to_demote.team_manager_id is not team_id:
+            return 1
+        team_id.manager_ids = [(3, user_id_to_demote.id)]
+        team_id.user_ids |= user_id_to_demote
         return 0
 
 
