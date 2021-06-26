@@ -11,6 +11,7 @@
                     <field name="team_manager_id" />
                     <field name="team_user_id" />
                     <field name="world_ids" />
+                    <field name="world_manager_ids" />
                 </field>
             </field>
         </record>
@@ -24,6 +25,7 @@
                     <field name="team_manager_id" />
                     <field name="team_user_id" />
                     <field name="world_ids" />
+                    <field name="world_manager_ids" />
                 </field>
             </field>
         </record>

@@ -7,7 +7,8 @@ class GCUser(models.Model):
 
     team_manager_id = fields.Many2one(comodel_name="gc.builder.team")
     team_user_id = fields.Many2one(comodel_name="gc.builder.team")
-    world_ids = fields.Many2many(comodel_name="gc.builder.world")
+    world_ids = fields.Many2many(comodel_name="gc.builder.world", relation="builder_user_builder_world_rel")
+    world_manager_ids = fields.Many2many(comodel_name="gc.builder.world", relation="builder_manager_user_builder_world_rel")
 
     @api.constrains("team_user_id", "team_manager_id")
     def _check_team_user_manager_id(self):

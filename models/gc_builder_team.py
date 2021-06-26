@@ -4,18 +4,25 @@ from odoo.exceptions import ValidationError
 
 class GCBuilderTeam(models.Model):
     _name = 'gc.builder.team'
+    _description = 'GigaClub Builder Team'
 
     name = fields.Char(required=True)
     description = fields.Text()
 
     user_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_user_id", inverse="_inverse_users")
     manager_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_manager_id", inverse="_inverse_users")
-    world_ids = fields.Many2many(comodel_name="gc.builder.world")
-    task_ids = fields.Many2many(comodel_name="gc.builder.task")
+    world_ids = fields.Many2many(comodel_name="gc.builder.world", relation="builder_team_builder_world_rel")
+    world_manager_ids = fields.Many2many(comodel_name="gc.builder.world", relation="builder_manager_team_builder_world_rel")
 
     _sql_constraints = [
         ('name_unique', 'UNIQUE(name)', 'name must be unique!')
     ]
+
+    @api.constrains("user_ids", "manager_ids")
+    def _check_user_and_managers(self):
+        for rec in self:
+            if set(rec.user_ids.ids) & set(rec.manager_ids.ids):
+                raise ValidationError("Managers should not be users too!")
 
     def _inverse_users(self):
         for rec in self:
@@ -167,4 +174,48 @@ class GCBuilderTeam(models.Model):
         team_id.user_ids |= user_id_to_demote
         return 0
 
+    def return_team(self, team_id):
+        return {
+            "name": team_id.name,
+            "description": team_id.description,
+            "user_ids": [
+                {
+                    "mc_uuid": u.mc_uuid
+                }
+                for u in team_id.user_ids
+            ],
+            "manager_ids": [
+                {
+                    "mc_uuid": m.mc_uuid
+                }
+                for m in team_id.manager_ids
+            ],
+            "world_ids": [
+                {
+                    "id": w.id
+                }
+                for w in team_id.world_ids
+            ]
+        }
 
+    @api.model
+    def get_team_by_member(self, player_uuid):
+        user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
+        team_id = False
+        if user_id.team_user_id:
+            team_id = user_id.team_user_id
+        elif user_id.team_manager_id:
+            team_id = user_id.team_manager_id
+        return self.return_team(team_id)
+
+    @api.model
+    def get_all_teams(self):
+        return [
+            self.return_team(x)
+            for x in self.search([])
+        ]
+
+    @api.model
+    def get_team(self, name):
+        team_id = self.search([("name", "=", name)])
+        return self.return_team(team_id)

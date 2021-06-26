@@ -12,7 +12,7 @@
                     <field name="manager_ids" />
                     <field name="user_ids" />
                     <field name="world_ids" />
-                    <field name="task_ids" />
+                    <field name="world_manager_ids" />
                 </tree>
             </field>
         </record>
@@ -28,7 +28,7 @@
                         <field name="manager_ids" />
                         <field name="user_ids" />
                         <field name="world_ids" />
-                        <field name="task_ids" />
+                        <field name="world_manager_ids" />
                     </group>
                 </form>
             </field>
