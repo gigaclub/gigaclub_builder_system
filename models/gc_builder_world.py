@@ -149,3 +149,44 @@ class GCBuilderWorld(models.Model):
         # TODO: This is not the final version.
         return world_id.world_attachment_id.datas
 
+    def return_world(self, world_id):
+        return {
+            "name": world_id.name,
+            "task_id": world_id.task_id.id,
+            "team_manager_ids": [
+                {
+                    "name": tm.name
+                }
+                for tm in world_id.team_manager_ids
+            ],
+            "team_ids": [
+                {
+                    "name": t.name
+                }
+                for t in world_id.team_ids
+            ],
+            "user_ids": [
+                {
+                    "mc_uuid": u.mc_uuid
+                }
+                for u in world_id.user_ids
+            ],
+            "user_manager_ids": [
+                {
+                    "mc_uuid": um.mc_uuid
+                }
+                for um in world_id.user_manager_ids
+            ]
+        }
+
+    @api.model
+    def get_all_worlds(self):
+        return [
+            self.return_world(x)
+            for x in self.search([])
+        ]
+
+    @api.model
+    def get_world(self, id):
+        world_id = self.browse(id)
+        return self.return_world(world_id)
