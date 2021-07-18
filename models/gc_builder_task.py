@@ -5,8 +5,10 @@ class GCBuilderTask(models.Model):
     _name = 'gc.builder.task'
     _description = 'GigaClub Builder Task'
 
-    name = fields.Char()
+    name = fields.Char(required=True)
     description = fields.Text()
+    build_width = fields.Integer(defualt=0)
+    build_length = fields.Integer(default=0)
 
     world_ids = fields.One2many(comodel_name="gc.builder.world", inverse_name="task_id")
 
@@ -14,6 +16,8 @@ class GCBuilderTask(models.Model):
         return {
             "name": task_id.name,
             "description": task_id.description,
+            "build_width": task_id.build_width,
+            "build_length": task_id.build_length,
             "world_ids": [
                 {
                     "id": w.id

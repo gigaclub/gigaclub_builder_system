@@ -9,6 +9,8 @@
                 <tree string="Tasks">
                     <field name="name" />
                     <field name="description" />
+                    <field name="build_width" />
+                    <field name="build_length" />
                     <field name="world_ids" />
                 </tree>
             </field>
@@ -22,6 +24,8 @@
                     <group>
                         <field name="name" />
                         <field name="description" />
+                        <field name="build_width" />
+                        <field name="build_length" />
                         <field name="world_ids" />
                     </group>
                 </form>
