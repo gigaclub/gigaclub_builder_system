@@ -3,12 +3,20 @@
     'version': '14.0.1.0.0',
     'summary': 'GigaClub Builder System Module',
     'category': 'GigaClub',
-    'author': 'GigaClub',
+    'author': 'GigaClub.net',
     'website': 'https://GigaClub.net/',
-    'license': 'Other proprietary',
+    'license': 'GPL-3',
     'depends': ['gigaclub_translation'],
-    'data': ['views/gc_builder_task_view.xml', 'views/gc_builder_team_view.xml', 'views/gc_user_view.xml',
-             'views/gc_builder_world_view.xml', 'views/menu_views.xml', 'security/ir.model.access.csv'],
+    'data': [
+         'data/gc_builder_world_type_data.xml',
+         'views/gc_builder_task_view.xml',
+         'views/gc_builder_team_view.xml',
+         'views/gc_user_view.xml',
+         'views/gc_builder_world_view.xml',
+         'views/gc_builder_world_type_view.xml',
+         'views/menu_views.xml',
+         'security/ir.model.access.csv'
+     ],
     'installable': True,
     'auto_install': False
 }

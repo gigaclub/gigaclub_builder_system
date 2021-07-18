@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="gc_builder_world_type_normal" model="gc.builder.world.type">
+            <field name="name">normal</field>
+        </record>
+
+        <record id="gc_builder_world_type_normal_flat" model="gc.builder.world.type">
+            <field name="name">normal flat</field>
+            <field name="default" eval="True"/>
+        </record>
+
+        <record id="gc_builder_world_type_normal_void" model="gc.builder.world.type">
+            <field name="name">normal void</field>
+        </record>
+
+        <record id="gc_builder_world_type_nether" model="gc.builder.world.type">
+            <field name="name">nether</field>
+        </record>
+
+        <record id="gc_builder_world_type_nether_flat" model="gc.builder.world.type">
+            <field name="name">nether flat</field>
+        </record>
+
+        <record id="gc_builder_world_type_nether_void" model="gc.builder.world.type">
+            <field name="name">nether void</field>
+        </record>
+
+        <record id="gc_builder_world_type_end" model="gc.builder.world.type">
+            <field name="name">end</field>
+        </record>
+
+        <record id="gc_builder_world_type_end_flat" model="gc.builder.world.type">
+            <field name="name">end flat</field>
+        </record>
+
+        <record id="gc_builder_world_type_end_void" model="gc.builder.world.type">
+            <field name="name">end void</field>
+        </record>
+
+    </data>
+</odoo>

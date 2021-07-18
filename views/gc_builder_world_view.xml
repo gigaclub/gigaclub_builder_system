@@ -6,8 +6,9 @@
             <field name="name">gc.builder.world.tree.view</field>
             <field name="model">gc.builder.world</field>
             <field name="arch" type="xml">
-                <tree string="Teams">
+                <tree string="Worlds">
                     <field name="name" />
+                    <field name="world_type_id" />
                     <field name="team_ids" />
                     <field name="team_manager_ids" />
                     <field name="user_ids" />
@@ -24,6 +25,7 @@
                 <form>
                     <group>
                         <field name="name" />
+                        <field name="world_type_id" />
                         <field name="team_ids" />
                         <field name="team_manager_ids" />
                         <field name="user_ids" />
