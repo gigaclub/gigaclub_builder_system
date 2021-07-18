@@ -6,8 +6,12 @@ class GCBuilderWorld(models.Model):
     _name = 'gc.builder.world'
     _description = 'GigaClub Builder World'
 
+    def _default_world_type_id(self):
+        return self.env["gc.builder.world.type"].search([("default", "=", True)], limit=1)
+
     name = fields.Char()
     world_attachment_id = fields.Many2one(comodel_name="ir.attachment")
+    world_type_id = fields.Many2one(comodel_name="gc.builder.world.type", default=_default_world_type_id)
 
     team_ids = fields.Many2many(comodel_name="gc.builder.team", relation="builder_team_builder_world_rel")
     team_manager_ids = fields.Many2many(comodel_name="gc.builder.team", relation="builder_manager_team_builder_world_rel")
@@ -28,17 +32,19 @@ class GCBuilderWorld(models.Model):
                 raise ValidationError("Managers should not be users too!")
 
     @api.model
-    def create_as_user(self, player_uuid, task_id, name):
+    def create_as_user(self, player_uuid, task_id, name, world_type):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
         task_id = self.env["gc.builder.task"].browse(task_id)
+        world_type_id = self.env["gc.builder.world.type"].search([("name", "=", world_type)])
         return self.create({
             "name": name,
             "task_id": task_id.id,
+            "world_type_id": world_type_id.id,
             "user_manager_ids": [(4, user_id.id)]
         }).id
 
     @api.model
-    def create_as_team(self, player_uuid, task_id, name):
+    def create_as_team(self, player_uuid, task_id, name, world_type):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
         team_id = False
         if user_id.team_manager_id:
@@ -46,9 +52,11 @@ class GCBuilderWorld(models.Model):
         elif user_id.team_user_id:
             team_id = user_id.team_user_id
         task_id = self.env["gc.builder.task"].browse(task_id)
+        world_type_id = self.env["gc.builder.world.type"].search([("name", "=", world_type)])
         return self.create({
             "name": name,
             "task_id": task_id.id,
+            "world_type_id": world_type_id.id,
             "team_manager_ids": [(4, team_id.id)]
         }).id
 
@@ -143,6 +151,19 @@ class GCBuilderWorld(models.Model):
         })
         return 0
 
+    # Status Codes:
+    # 1: World does not exist
+    # 0: Success
+    @api.model
+    def edit_world_type(self, world_id, world_type):
+        world_id = self.browse(world_id)
+        if not world_id:
+            return 1
+        world_type_id = self.env["gc.builder.world.type"].search([("name", "=", world_type)])
+        world_id.write({
+            "world_type_id": world_type_id.id
+        })
+
     @api.model
     def get_world_data(self, world_id):
         world_id = self.browse(world_id)
@@ -153,6 +174,7 @@ class GCBuilderWorld(models.Model):
         return {
             "name": world_id.name,
             "task_id": world_id.task_id.id,
+            "world_type": world_id.world_type_id.name,
             "team_manager_ids": [
                 {
                     "name": tm.name
