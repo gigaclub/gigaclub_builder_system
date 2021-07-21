@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.ui.view" id="gc_team_tree_view_inherit_builder_system">
+            <field name="name">gc.builder.team.tree.view</field>
+            <field name="model">gc.team</field>
+            <field name="inherit_id" ref="gigaclub_team.gc_team_tree_view" />
+            <field name="arch" type="xml">
+                <tree string="Teams">
+                    <field name="world_ids" />
+                    <field name="world_manager_ids" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="gc_team_form_view_inherit_builder_system">
+            <field name="name">gc.builder.team.form.view</field>
+            <field name="model">gc.team</field>
+            <field name="inherit_id" ref="gigaclub_team.gc_team_form_view" />
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="world_ids" />
+                        <field name="world_manager_ids" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

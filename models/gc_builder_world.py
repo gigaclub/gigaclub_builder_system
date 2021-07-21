@@ -13,8 +13,8 @@ class GCBuilderWorld(models.Model):
     world_attachment_id = fields.Many2one(comodel_name="ir.attachment")
     world_type_id = fields.Many2one(comodel_name="gc.builder.world.type", default=_default_world_type_id)
 
-    team_ids = fields.Many2many(comodel_name="gc.builder.team", relation="builder_team_builder_world_rel")
-    team_manager_ids = fields.Many2many(comodel_name="gc.builder.team", relation="builder_manager_team_builder_world_rel")
+    team_ids = fields.Many2many(comodel_name="gc.team", relation="team_builder_world_rel")
+    team_manager_ids = fields.Many2many(comodel_name="gc.team", relation="manager_team_builder_world_rel")
     user_ids = fields.Many2many(comodel_name="gc.user", relation="builder_user_builder_world_rel")
     user_manager_ids = fields.Many2many(comodel_name="gc.user", relation="builder_manager_user_builder_world_rel")
     task_id = fields.Many2one(comodel_name="gc.builder.task", required=True)

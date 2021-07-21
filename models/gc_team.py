@@ -1,28 +1,12 @@
 from odoo import fields, models, api
-from odoo.exceptions import ValidationError
 
 
-class GCBuilderTeam(models.Model):
-    _name = 'gc.builder.team'
+class GCTeam(models.Model):
+    _inherit = 'gc.team'
     _description = 'GigaClub Builder Team'
 
-    name = fields.Char(required=True)
-    description = fields.Text()
-
-    user_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_user_id", inverse="_inverse_users")
-    manager_ids = fields.One2many(comodel_name="gc.user", inverse_name="team_manager_id", inverse="_inverse_users")
     world_ids = fields.Many2many(comodel_name="gc.builder.world", relation="builder_team_builder_world_rel")
     world_manager_ids = fields.Many2many(comodel_name="gc.builder.world", relation="builder_manager_team_builder_world_rel")
-
-    _sql_constraints = [
-        ('name_unique', 'UNIQUE(name)', 'name must be unique!')
-    ]
-
-    @api.constrains("user_ids", "manager_ids")
-    def _check_user_and_managers(self):
-        for rec in self:
-            if set(rec.user_ids.ids) & set(rec.manager_ids.ids):
-                raise ValidationError("Managers should not be users too!")
 
     def _inverse_users(self):
         for rec in self:
