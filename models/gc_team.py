@@ -203,3 +203,55 @@ class GCTeam(models.Model):
     def get_team(self, name):
         team_id = self.search([("name", "=", name)])
         return self.return_team(team_id)
+
+    # Status Codes:
+    # 3: Team does not exist
+    # 2: User is not manager
+    # 1: User is already member of this team
+    # 0: Success
+    @api.model
+    def invite_member(self, player_uuid, player_uuid_to_invite):
+        user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
+        team_id = user_id.team_user_id or user_id.team_manager_id
+        if not team_id:
+            return 3
+        if user_id not in team_id.manager_ids:
+            return 2
+        user_id_to_invite = self.env["gc.user"].search([("mc_uuid", "=", player_uuid_to_invite)])
+        if user_id_to_invite in team_id.user_ids:
+            return 1
+        self.env["gc.request"].create({"sender_id": team_id.id, "requester_id": user_id_to_invite.id, "state": "waiting"})
+        return 0
+
+    # Status Codes:
+    # 2: Team does not exist
+    # 1: Request does not exist
+    # 0: Success
+    @api.model
+    def accept_request(self, player_uuid, team_name):
+        user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
+        team_id = self.env.search([("name", "=", team_name)])
+        if not team_id:
+            return 2
+        request_id = self.env["gc.request"].search([("sender_id", "=", team_id.id), ("requester_id", "=", user_id.id)])
+        if not request_id:
+            return 1
+        request_id.state = "accepted"
+        team_id.user_ids |= user_id
+        return 0
+
+    # Status Codes:
+    # 2: Team does not exist
+    # 1: Request does not exist
+    # 0: Success
+    @api.model
+    def deny_request(self, player_uuid, team_name):
+        user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
+        team_id = self.env.search([("name", "=", team_name)])
+        if not team_id:
+            return 2
+        request_id = self.env["gc.request"].search([("sender_id", "=", team_id.id), ("requester_id", "=", user_id.id)])
+        if not request_id:
+            return 1
+        request_id.state = "denied"
+        return 0
