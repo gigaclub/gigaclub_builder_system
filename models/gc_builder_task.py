@@ -14,6 +14,7 @@ class GCBuilderTask(models.Model):
 
     def return_task(self, task_id):
         return {
+            "id": task_id.id,
             "name": task_id.name,
             "description": task_id.description,
             "build_width": task_id.build_width,
