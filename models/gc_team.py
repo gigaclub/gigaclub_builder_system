@@ -220,7 +220,7 @@ class GCTeam(models.Model):
         user_id_to_invite = self.env["gc.user"].search([("mc_uuid", "=", player_uuid_to_invite)])
         if user_id_to_invite in team_id.user_ids:
             return 1
-        self.env["gc.request"].create({"sender_id": f"{team_id._name},{team_id.id}", "requester_id": f"{user_id_to_invite._name},{user_id_to_invite.id}", "state": "waiting"})
+        self.env["gc.request"].create({"sender_id": f"{team_id._name},{team_id.id}", "receiver_id": f"{user_id_to_invite._name},{user_id_to_invite.id}", "state": "waiting"})
         return 0
 
     # Status Codes:
@@ -233,7 +233,7 @@ class GCTeam(models.Model):
         team_id = self.env.search([("name", "=", team_name)])
         if not team_id:
             return 2
-        request_id = self.env["gc.request"].search([("sender_id", "=", f"{team_id._name},{team_id.id}"), ("requester_id", "=", f"{user_id._name},{user_id.id}"), ("state", "=", "waiting")], limit=1)
+        request_id = self.env["gc.request"].search([("sender_id", "=", f"{team_id._name},{team_id.id}"), ("receiver_id", "=", f"{user_id._name},{user_id.id}"), ("state", "=", "waiting")], limit=1)
         if not request_id:
             return 1
         request_id.state = "accepted"
@@ -250,7 +250,7 @@ class GCTeam(models.Model):
         team_id = self.env.search([("name", "=", team_name)])
         if not team_id:
             return 2
-        request_id = self.env["gc.request"].search([("sender_id", "=", f"{team_id._name},{team_id.id}"), ("requester_id", "=", f"{user_id._name},{user_id.id}"), ("state", "=", "waiting")], limit=1)
+        request_id = self.env["gc.request"].search([("sender_id", "=", f"{team_id._name},{team_id.id}"), ("receiver_id", "=", f"{user_id._name},{user_id.id}"), ("state", "=", "waiting")], limit=1)
         if not request_id:
             return 1
         request_id.state = "denied"
