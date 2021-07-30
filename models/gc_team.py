@@ -230,7 +230,7 @@ class GCTeam(models.Model):
     @api.model
     def accept_request(self, player_uuid, team_name):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
-        team_id = self.env.search([("name", "=", team_name)])
+        team_id = self.search([("name", "=", team_name)])
         if not team_id:
             return 2
         request_id = self.env["gc.request"].search([("sender_id", "=", f"{team_id._name},{team_id.id}"), ("receiver_id", "=", f"{user_id._name},{user_id.id}"), ("state", "=", "waiting")], limit=1)
@@ -247,7 +247,7 @@ class GCTeam(models.Model):
     @api.model
     def deny_request(self, player_uuid, team_name):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
-        team_id = self.env.search([("name", "=", team_name)])
+        team_id = self.search([("name", "=", team_name)])
         if not team_id:
             return 2
         request_id = self.env["gc.request"].search([("sender_id", "=", f"{team_id._name},{team_id.id}"), ("receiver_id", "=", f"{user_id._name},{user_id.id}"), ("state", "=", "waiting")], limit=1)
