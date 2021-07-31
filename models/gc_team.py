@@ -27,7 +27,7 @@ class GCTeam(models.Model):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
         if user_id.team_user_id or user_id.team_manager_id:
             return 3
-        if bool(self.search_count([("name", "=", name)])):
+        if bool(self.search_count([("name", "=ilike", name)])):
             return 2
         team_id = self.create({
             "name": name,
@@ -48,7 +48,7 @@ class GCTeam(models.Model):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
         if not user_id.team_user_id and not user_id.team_manager_id:
             return 3
-        team_id = self.search([("name", "=", name)])
+        team_id = self.search([("name", "=ilike", name)])
         if not team_id:
             return 2
         if user_id not in team_id.manager_ids:
@@ -201,7 +201,7 @@ class GCTeam(models.Model):
 
     @api.model
     def get_team(self, name):
-        team_id = self.search([("name", "=", name)])
+        team_id = self.search([("name", "=ilike", name)])
         return self.return_team(team_id)
 
     # Status Codes:
@@ -247,7 +247,7 @@ class GCTeam(models.Model):
     @api.model
     def deny_request(self, player_uuid, team_name):
         user_id = self.env["gc.user"].search([("mc_uuid", "=", player_uuid)])
-        team_id = self.search([("name", "=", team_name)])
+        team_id = self.search([("name", "=ilike", team_name)])
         if not team_id:
             return 2
         request_id = self.env["gc.request"].search([("sender_id", "=", f"{team_id._name},{team_id.id}"), ("receiver_id", "=", f"{user_id._name},{user_id.id}"), ("state", "=", "waiting")], limit=1)
